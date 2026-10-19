@@ -43,9 +43,11 @@ shell floor toward the lid.
 The mics are bottom-ported: sound enters through the hole in the PCB back.
 That back face must press flat against the lid, over its grille (7 × Ø0.7 holes).
 
-1. Solder five 30 AWG wires to each mic breakout: **3V, GND, BCLK, DOUT,
+1. Solder three 30 AWG signal wires to each mic breakout: **BCLK, DOUT,
    LRCL**, 80 mm long for mic 1 (far end) and 60 mm for mic 2 (USB end).
-   Leave SEL for now.
+   Power is daisy-chained so the XIAO pads stay uncrowded: a 3V and a GND
+   link from mic 1 to mic 2 (about 30 mm), then one 3V and one GND wire
+   (60 mm) from mic 2 to the XIAO. Leave SEL for now.
 2. On **mic 1** bridge SEL to GND with a short wire (LEFT channel). On
    **mic 2** bridge SEL to 3V (RIGHT channel). Write "L" and "R" on the
    boards with a marker.
@@ -55,15 +57,26 @@ That back face must press flat against the lid, over its grille (7 × Ø0.7 hole
    Press down. Shine a light through the lid grille: you should see the port.
 4. **LED (NeoPixel Mini Button, Adafruit 1612):** tape it into the 9.7 mm
    square 0.4 mm recess on the underside of the RF window insert, LED facing
-   the insert (the translucent insert is the diffuser). Wires: 3V3 (+),
-   GND (−), DIN (DI). 60 mm.
+   the insert (the translucent insert is the diffuser), centred at
+   (−31.5, 11.2). Wires: 3V3 (+), GND (−), DIN (DI). 60 mm.
 5. **Motor (optional):** stick the coin motor into its Ø10.6 recess under
-   the lid at (−12, −11),
-   leads toward the XIAO. Build the driver (2N2222, 1 kΩ, 1N4148, 100 nF)
-   inline on the motor leads and heat-shrink it.
+   the lid at (28, 15.5), the +X/+Y corner, so it sits over the microSD
+   breakout once the lid is closed; leads toward the XIAO. Build the driver
+   inline on the motor leads and heat-shrink it:
+   - motor + and the 1N4148 cathode → a wire to **BAT+** (not 3V3);
+   - motor − and the 1N4148 anode → PN2222A collector;
+   - 100 nF across the motor terminals, 10 µF from motor + to the emitter
+     (GND) side, both at the motor;
+   - base → 470 Ω → CTRL wire (to D7); 10 kΩ from base to emitter (keeps the
+     motor off while the XIAO boots);
+   - emitter → its own GND wire to the XIAO GND pad (not shared with the
+     mics).
 6. **Antenna:** plug the U.FL connector onto the XIAO now (press one edge,
-   then the other; it clicks). Tape the FPC antenna under the lid at
-   (−22, 12), keeping it away from the mics. The cable runs down to the XIAO.
+   then the other; it clicks). Stick the FPC antenna to the underside of the
+   RF window insert, centred at (−31.5, −5.5), long side along Y, on the −Y
+   side of the LED. The window spans X −37 … −26 and Y −16.5 … 16.5: no part of the
+   antenna may sit under solid aluminium, and it must not touch mic 1
+   (X −23.8 … −7.3). The cable runs down to the XIAO.
 
 ## 2. XIAO: solder everything to it on the bench
 
@@ -74,37 +87,58 @@ board sits on 1.0 mm corner posts.
 
 **microSD breakout:** six wires on the pad side (the side without the
 socket), 40 mm: VCC → 3V3, GND, CS → D5, DI → D10, SCK → D8, DO → D9.
-Keep the solder flat; the board also sits on 1.0 mm posts.
+Keep the solder flat; the board also sits on 1.0 mm posts. The breakout has
+no resistors or capacitors of its own, so add them at its pads first:
+10 kΩ from VCC to each of CS, DO, DAT1 (socket pin 8) and DAT2 (socket
+pin 1; neither has a header pad, solder to the socket lead), and 10 µF +
+100 nF from VCC to GND. Lay them flat on the socket side beside the socket,
+never on the pad side (1.0 mm posts) and not under the motor. The CAD does
+not model these parts; check the fit on unit 1.
+
+**Passives at the XIAO:** the 33 Ω goes in series in the BCLK wire and the
+100 kΩ from the DOUT wire to GND, both within ~15 mm of the XIAO pads,
+heat-shrunk and laid beside the XIAO (never under it: 1.0 mm posts).
+
+**VBAT divider (optional):** 220 kΩ from BAT+ to the D0 wire, 220 kΩ from
+D0 to GND, 100 nF from D0 to GND, built inline next to the XIAO and
+heat-shrunk.
 
 | XIAO pad | to | wire |
 |---|---|---|
-| 3V3 | mic 1 3V, mic 2 3V, mic 2 SEL, LED VCC, (motor +) | red |
-| GND | mic 1 GND, mic 1 SEL, mic 2 GND, LED GND, switch pin 2, (driver E) | black |
-| D1 / GPIO2 | mic 1 BCLK, mic 2 BCLK | blue |
+| 3V3 | mic chain 3V (from mic 2), LED +, microSD VCC | red |
+| GND | mic chain GND (from mic 2), microSD GND, motor emitter (own wire, optional), one splice wire for LED −, switch contact B, 100 kΩ, (divider) | black |
+| BAT+ | battery red lead, (motor + and divider top: splice to the red lead first) | red |
+| D1 / GPIO2 | 33 Ω in series → mic 1 BCLK, mic 2 BCLK | blue |
 | D2 / GPIO3 | mic 1 LRCL, mic 2 LRCL | green |
-| D3 / GPIO4 | mic 1 DOUT, mic 2 DOUT | purple |
-| D7 / GPIO44 | switch pin 1 | orange |
+| D3 / GPIO4 | mic 1 DOUT, mic 2 DOUT; 100 kΩ to GND | purple |
+| D4 / GPIO5 | switch contact A | orange |
 | D6 / GPIO43 | LED DIN | white |
-| D4 / GPIO5 | motor driver CTRL (optional) | brown |
-| D0 / GPIO1 | VBAT divider midpoint (optional) | yellow |
+| D7 / GPIO44 | motor driver CTRL via 470 Ω (optional) | brown |
+| D0 / GPIO1 | VBAT divider midpoint + 100 nF to GND (optional) | yellow |
 
-Where two wires share a pad, twist and tin them together first.
+The mic SEL pins are bridged on the mic boards (step 1.2), not wired to the
+XIAO. Where two wires share a pad, twist and tin them together first; no pad
+should take more than four 30 AWG wires, so join the small GND returns on
+one splice wire.
 
 **Switch (Omron B3F-1022, 6 × 6, 5.0 mm, 100 gf):** clip the four legs to 1 mm and bend
 them flat against the body *sides* (not the base: the base sits 0.5 mm from
 the cradle backstop). Solder a 60 mm wire to two legs on opposite sides of
 the body (they are one contact pair; check with a meter: open at rest,
-closed when pressed). Keep solder low; the cradle ribs leave 0.8 mm per side.
+closed when pressed). Contact A goes to D4, contact B to GND. Keep solder low; the cradle ribs leave 0.8 mm per side.
 
 **Battery, last and carefully.** The XIAO battery pads are on the underside:
 **BAT− is the pad nearest the USB-C connector, BAT+ is the one away from
 it.** Wrong polarity destroys the charger. Procedure: tape the black lead to
 the bench, solder red to BAT+, then untape black and solder it to BAT−.
-Never let the bare leads touch. Cover both pads with Kapton.
+Never let the bare leads touch. Cover both pads with Kapton. If the motor
+or the VBAT divider is fitted, splice their BAT+ wires to the red lead
+(heat-shrink) before the red lead goes onto BAT+.
 
 Now power the board from USB-C: the XIAO's charge LED should light and, if
 you flash the test firmware (`firmware/` — not part of this v0 release),
-the mics, LED and button can be checked before closing the box.
+the mics, LED and button can be checked before closing the box. Check that
+the motor stays still through power-up and reset.
 
 ## 3. Onto the tray, then into the shell
 

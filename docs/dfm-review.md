@@ -134,9 +134,16 @@ in `bom/bom.csv` as well.
 | 4 | Adafruit 3421 I2S mic SPH0645 | 1528-1908-ND | $6.95 (2,163 in stock) |
 | 2 (+2 spare) | Omron B3F-1022 tactile 6×6×5.0, 100 gf | search "B3F-1022" (check stock) | ~$0.40 |
 | 2 | 1N4148 diode (motor flyback, optional) | 1N4148FS-ND | $0.10 |
-| 2 | 1 kΩ 1/4 W (motor base, optional) | CF14JT1K00CT-ND | $0.10 |
+| 2 | 470 Ω 1/4 W (motor base, optional) | CF14JT470RCT-ND | $0.10 |
 | 4 | 220 kΩ 1/4 W (VBAT divider, optional) | CF14JT220KCT-ND | $0.10 |
-| 2 | 100 nF ceramic (motor, optional) | BC1084CT-ND | $0.31 |
+| 6 | 100 nF ceramic (microSD, VBAT divider; 2 of them across the motor, optional) | BC1084CT-ND | $0.31 |
+| 10 | 10 kΩ 1/4 W (8 microSD pull-ups, 2 motor base-emitter, optional) | CF14JT10K0CT-ND | $0.10 |
+| 2 | 100 kΩ 1/4 W (I2S DOUT pull-down) | CF14JT100KCT-ND | $0.10 |
+| 2 | 33 Ω 1/4 W (I2S BCLK series) | CF14JT33R0CT-ND | $0.10 |
+
+The 10 µF 0805 (Murata GRM21BR61C106KE15L, 4 pcs: 2 at the microSD, 2 at
+the motor) was out of stock at Digi-Key (490-3886-1-ND) on 19.10.2026; order
+it from JLCPCB / LCSC (C77075, $0.04) or use any 10 µF ≥ 10 V X5R 0805.
 | 2 | PN2222A NPN TO-92 (optional) | search "PN2222A" (onsemi PN2222ABU) | ~$0.20 |
 
 **Order B — Adafruit** (adafruit.com, ships from New York, UPS 2-day or
@@ -144,7 +151,7 @@ Next Day available at checkout):
 
 | qty | item | link | unit |
 |---|---|---|---|
-| 1 pack (5) | NeoPixel Mini Button PCB | https://www.adafruit.com/product/1612 | $4.95 (in stock) |
+| 1 pack (5) | NeoPixel Mini Button PCB (also Mouser 485-1612, 15 in stock 19.10.2026) | https://www.adafruit.com/product/1612 | $4.95 (in stock) |
 | 2 | Vibrating mini motor disc 10 × 2.7 (optional) | https://www.adafruit.com/product/1201 | $1.95 (in stock) |
 
 The mics (3421) are also in stock at Adafruit at the same $6.95 if Digi-Key

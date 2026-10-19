@@ -43,9 +43,13 @@ custom PCB, pendant and clip variants.
 | Finish and colourways | graphite (black anodize), silver (clear anodize), midnight blue, sage green; orange button cap on all. Shell bottom edge R2.0, top edge C0.3 chamfer cut after anodizing (bright edge); laser marks after anodizing | product look; a colour is only a different anodize, the geometry stays the same |
 | Protocol | Pocket-compatible BLE / Wi-Fi AP / USB MSC protocol as reverse-engineered in pocket-libre `PROTOCOL.md` | the desktop client (sync, Whisper, diarization, summaries) already exists, is MIT and maintained; we do not write a receiver |
 | Audio format | MP3 16 kHz mono 32 kbps, files `RECORD/YYYYMMDD/YYYYMMDDHHmmss.mp3` | identical to the original so pocket-libre's size accounting and Whisper pipeline work unchanged; 14 MB per hour |
-| Two mics, mono output | keep 2 × SPH0645 at 27 mm, mix to mono in firmware | the original is mono too; two mics are for noise reduction, not stereo |
+| Two mics, mono output | keep 2 × SPH0645 at 25.5 mm, mix to mono in firmware | the original is mono too; two mics are for noise reduction, not stereo |
 | Security | plain protocol by default (as the original), BLE Secure Connections + encrypted link as an opt-in extension | compatibility first; the original has no encryption at all, we can do better without breaking clients |
 | Status LED | Adafruit 1612 NeoPixel Mini Button in a lid recess | Flora NeoPixel out of stock; smaller, locating recess instead of tape-only |
+| Pin map (electronics review 19.10.2026) | button on D4/GPIO5, haptic CTRL on D7/GPIO44 | GPIO5 is an RTC GPIO, so the button can wake the chip from deep sleep (ext0); GPIO44 is not (ESP32-S3 RTC wake: GPIO0–21) |
+| Small passives | 33 Ω on BCLK and 100 kΩ DOUT pull-down at the XIAO; 10 kΩ pull-ups (CS, DO, DAT1, DAT2) and 10 µF + 100 nF at the microSD breakout; 100 nF on the VBAT divider | one BCLK wire drives two mics; DOUT floats between mic slots; the breakout has no passives of its own; SAR ADC source impedance |
+| Haptic supply | motor + and the flyback diode on BAT+, 470 Ω base, 10 kΩ base-emitter, 10 µF + 100 nF at the motor, emitter on its own GND wire | keeps motor current and brush noise off the 3V3 rail shared with the mics, SD and radio; motor off during boot |
+| Audio capture | 32 kHz I2S (BCLK 2.048 MHz), decimated to 16 kHz in firmware | SPH0645 clock range is 2.048–4.096 MHz; files stay 16 kHz MP3 |
 
 ## Enclosure numbers
 
@@ -85,9 +89,12 @@ custom PCB, pendant and clip variants.
   it (0.3–0.5 mm clearance), the motor above the microSD board.
 - Mics taped under the lid in 0.5 mm recesses (0.2 mm tape) with two
   locating pegs each, the PCB back pressed flat against the lid over a
-  7 × Ø0.7 grille; positions (−28, 0) and
-  mic 1 (−17.5, 8.5) and mic 2 (3.5, −8.5) → 27 mm baseline. LED and
-  motor sit in 0.4 mm recesses.
+  7 × Ø0.7 grille; mic 1 (−15.5, 8.5) and mic 2 (3.5, −8.5) → 25.5 mm
+  baseline (CAD values). LED and motor sit in 0.4 mm recesses: LED at
+  (−31.5, 11.2) under the RF window, motor at (28, 15.5) over the microSD
+  breakout. FPC antenna under the RF window at (−31.5, −5.5).
+- The CAD mic model is the Adafruit 6049 (ICS-43434) STEP, same board
+  outline as the 3421 that is bought; the port position is open question 4.
 - Every part is located by geometry (walls, rails, posts, pegs, recesses);
   tape and glue only hold, never locate. See `docs/dfm-review.md` for the
   positional check of every part.
@@ -115,17 +122,31 @@ The firmware specification applies to all three; only the pin map changes.
 
 1. Button: B3F-1022 (5.0 mm, 100 gf) behind the aluminium cap; check the
    travel and click through the cap on unit 1 (printed PETG cap first).
-2. Antenna placement under the lid near the battery and 10 mm from the
-   aluminium: expect reduced Wi-Fi range; measure on the first build.
+2. Antenna under the RF window, within ~5 mm of aluminium edges, and the
+   11 × 33 window is about half a 2.45 GHz half-wavelength: expect
+   detuning and loss (unverified, possibly several dB to more than 10 dB).
+   Go/no-go test on unit 1: RSSI with the lid off, with the aluminium lid
+   and window, and with a printed lid. Measure the real U.FL cable (about
+   50 mm from the XIAO to X = −31.5) before printing.
 3. XIAO charging at 100 mA → ~5 h for 500 mAh. Fine.
 4. SPH0645 vs ICS-43434 port position: the 7-hole Ø0.7 grille should
    cover it; verify on the first lid with a light.
 5. Battery sense divider (D0) and haptics are optional; firmware decides.
+   Without the divider there is no low-battery cutoff except the cell PCM.
+   Haptic pulses are sequenced around capture (`firmware-spec.md`) because
+   motor and mics share the aluminium lid.
 6. pocket-libre scans for the `PKT01_` name pattern; check whether it
    accepts another name or send a small PR so OpenPocket can advertise as
    `OPENPOCKET_…`.
 7. Lid light hole and the NeoPixel: the original has an RGBW LED; ours is
-   RGB. Fine for status, not a copy.
+   RGB. Fine for status, not a copy. The 1612 is rated 5 V (3.5 V min) and
+   runs from 3.3 V here: check brightness and colour on unit 1; if too dim,
+   move LED + to BAT+ (data level still fine) or use a 3.3 V part in v1.
+   It also draws quiescent current that cannot be switched off.
+12. Deep-sleep current: the NeoPixel, the SD card, the mics and the divider
+    stay powered; probably ~1 mA in total (unverified). Measure on unit 1.
+    v1 PCB: load switch on SD + LED, charger status (CHRG/STDBY) and VBUS
+    sense on GPIOs, so the firmware can show charging.
 8. microSD is captive: insert the card before the lid goes on. Normal use
    never removes it (USB MSC, BLE, Wi-Fi).
 9. Snap lips over the microSD PCB (0.5 and 0.3 mm) are the first FDM

@@ -16,23 +16,50 @@ work unchanged. Everything beyond that is an extension, never a deviation.
 
 - Seeed XIAO ESP32S3 (plain), ESP-IDF 5.x (not Arduino: we need NimBLE,
   TinyUSB MSC, SPI SD and the audio codec library together).
+- Console: `CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG` (or none), never UART0.
+  GPIO43 (U0TXD) drives the NeoPixel and GPIO44 (U0RXD) the motor driver.
+  The ROM bootloader still prints its log on U0TXD at every boot and
+  deep-sleep wake, so the NeoPixel receives garbage and may flash or latch a
+  random colour until the firmware writes it. Accept that flash, or burn
+  `CONFIG_BOOT_ROM_LOG_ALWAYS_OFF` (eFuse, one-time) once the firmware is
+  stable. Write the pixel off as the first thing after boot.
 - Storage: microSD on the SparkFun breakout over SPI (CS D5/GPIO6, SCK
-  D8/GPIO7, MISO D9/GPIO8, MOSI D10/GPIO9), FAT32. 4 KB/s of MP3 is far
-  below SPI SD throughput. Directory layout identical to the original:
+  D8/GPIO7, MISO D9/GPIO8, MOSI D10/GPIO9), FAT32. 10 kΩ pull-ups on CS, DO,
+  DAT1 and DAT2 and 10 µF + 100 nF are fitted at the breakout. SPI clock:
+  start at 10–20 MHz (80 mm of unshielded wire), raise only if the unit-1
+  tests pass. 4 KB/s of MP3 is far below SPI SD throughput even at 10 MHz.
+  Directory layout identical to the original:
   `RECORD/YYYYMMDD/YYYYMMDDHHmmss.mp3`.
 - Audio in: two SPH0645 on one I2S bus (BCLK GPIO2, LRCL GPIO3, DOUT GPIO4),
-  32-bit frames, left = mic 1 (SEL→GND), right = mic 2 (SEL→3V3), 16 kHz.
+  left = mic 1 (SEL→GND), right = mic 2 (SEL→3V3). Each mic drives DOUT
+  only in its WS half and is high-Z otherwise (100 kΩ pull-down at the XIAO).
+  - Capture at **32 kHz**: BCLK 2.048 MHz, 64 BCLK per frame (WS = BCLK / 64),
+    32-bit slots, stereo, Philips I2S. The SPH0645 datasheet range is
+    2.048–4.096 MHz; 16 kHz capture (1.024 MHz) is out of spec and close to
+    the mic's 900 kHz sleep threshold.
+  - Low-pass and decimate ×2 to 16 kHz before mixing and encoding.
+  - SPH0645 timing quirk: the mic changes DATA on the BCLK rising edge and
+    the ESP32 samples on the rising edge, which gives a one-bit shift or
+    random bit errors. Sample on the falling edge (I2S RX timing setting) and
+    verify the alignment on unit 1 with a 1 kHz tone (logic analyser or the
+    captured waveform: no doubled amplitude, no noise floor jumps).
+  - Each sample is 18 significant bits, MSB-first from bit 31 of the slot
+    (the mic drives 24 bits, then floats). Take the top 18 bits and
+    sign-extend: `s = ((int32_t)raw) >> 14`.
 - Audio out to file: MP3 16 kHz mono 32 kbps CBR via `esp_audio_codec`
   (Espressif MP3 encoder), 144-byte frames, matching the original stream
   byte-for-byte in format so pocket-libre's size accounting
-  (4000 bytes/s) holds.
+  (4000 bytes/s) holds. The 32 kHz capture is internal only; files and the
+  protocol are unchanged.
 - Mono from two mics, v0: average of the two channels after per-channel DC
   removal and gain match. Later: delay-and-sum or a simple two-mic noise
-  reducer; the 27 mm baseline is kept for that.
+  reducer; the 25.5 mm baseline is kept for that.
 
 ## Controls and indication
 
-- Side button (D7 / GPIO44, active low, internal pull-up):
+- Side button (D4 / GPIO5, active low, internal pull-up; GPIO5 is an RTC
+  GPIO, so it also wakes the chip from deep sleep via ext0 with
+  `rtc_gpio_pullup_en`, see Power):
   - short press: start / stop recording (`MCU&STA&<name>` / `MCU&STO` to a
     connected client).
   - hold 3 s while idle: toggle BLE advertising on/off (airplane mode).
@@ -40,10 +67,26 @@ work unchanged. Everything beyond that is an extension, never a deviation.
     after a reset: next `APP&SK` is accepted and stored).
 - NeoPixel (D6 / GPIO43), one pixel, dimmed: breathing white idle with a
   client connected, solid red recording, blue blink BLE transfer, cyan blink
-  Wi-Fi AP up, orange charging, green full, red double blink SD error.
-- Haptic (D4 / GPIO5, optional): one pulse on record start, two on stop.
-- Battery: VBAT divider on D0 / GPIO1 (2 × 220 kΩ), 10-sample average,
-  reported by `APP&BAT` as percent from a LiPo discharge table.
+  Wi-Fi AP up, red double blink SD error. No charging / full states: the
+  XIAO routes neither its charger status nor VBUS to a GPIO (the XIAO's own
+  charge LED shows charging). Route CHRG/STDBY and VBUS sense to GPIOs on
+  the custom PCB. The pixel runs from 3.3 V although it is rated 5 V (3.5 V
+  min): colours are dimmer, check on unit 1.
+- Haptic (D7 / GPIO44, optional, active high through the NPN driver; the
+  10 kΩ base-emitter resistor keeps it off while the pin floats at boot):
+  - record start: one pulse → wait ~250 ms for the motor to spin down →
+    start I2S capture;
+  - record stop: stop capture → close the file → two pulses;
+  - never vibrate while capture or BLE live audio is running, and never
+    during the Wi-Fi AP (3V3 / battery peak current).
+  The motor and both mics sit on the same aluminium lid, so any vibration
+  during capture lands in the recording. (Credit: a speech engineer's
+  comment on the first design.)
+- Battery: VBAT divider on D0 / GPIO1 (2 × 220 kΩ, 100 nF from D0 to GND
+  so the 110 kΩ source does not upset the SAR sample), ADC1 channel 0 with
+  `ADC_ATTEN_DB_12` (4.2 V / 2 = 2.1 V is above the 6 dB range) and the
+  curve-fitting calibration scheme, 10-sample average, reported by `APP&BAT`
+  as percent from a LiPo discharge table.
 
 ## Protocol (must match pocket-libre `PROTOCOL.md`)
 
@@ -92,8 +135,28 @@ work unchanged. Everything beyond that is an extension, never a deviation.
 - Recording: ESP32-S3 at 80 MHz with Wi-Fi/BLE modem-sleep, I2S + MP3
   encoding + SD writes ≈ 35–50 mA → 500 mAh ≈ 10–12 h.
 - Idle, BLE advertising, light sleep between events: ≈ 2–4 mA → 5+ days.
-- Deep sleep after 3 days idle; button wakes.
+- Deep sleep after 3 days idle; the button wakes it (ext0 on GPIO5, level
+  low, `rtc_gpio_pullup_en(GPIO_NUM_5)` so the pull-up survives deep sleep).
+- Low battery: if the VBAT divider is fitted, go to deep sleep below
+  ~3.4 V so the cell's protection circuit is never the cutoff.
+- Deep-sleep floor is set by loads that cannot be switched off on 3V3
+  (NeoPixel quiescent current, SD card idle, mics, divider), probably
+  ~1 mA against 14 µA for the XIAO alone. Measure it on unit 1 and write the
+  number here. A load switch for SD + LED is on the custom PCB list.
+- Keep the brownout detector on. Worst-case 3V3 load (Wi-Fi TX + SD write +
+  LED) is close to the XIAO regulator's 700 mA; the motor runs from BAT+.
 - Charging through the XIAO at 100 mA (~5 h).
+
+## Recovery and flashing
+
+The XIAO BOOT/RESET buttons are inside a screwed metal box, and with TinyUSB
+MSC/CDC active the USB-Serial-JTAG auto-reset is gone. Therefore:
+
+- a button gesture while USB is connected (e.g. hold 20 s, beyond the 10 s
+  key reset; final choice at implementation) or a CDC 1200-baud touch makes
+  the firmware reboot into ROM download mode (forced download boot);
+- whenever MSC is off, USB enumerates as USB-Serial-JTAG so `esptool` works
+  without opening the box.
 
 ## Test plan for unit 1
 
@@ -104,3 +167,10 @@ work unchanged. Everything beyond that is an extension, never a deviation.
 3. `wifi-transfer` of a 10-minute file completes in < 30 s.
 4. `APP&USB&1` mounts the card on the laptop.
 5. 1 h recording: file size 14.4 MB ± 1 %, no dropouts, battery drop < 6 %.
+6. 1 kHz tone at 30 cm: both channels clean, correct L/R, no one-bit
+   shift (check the falling-edge sampling and the 18-bit sign extension).
+7. The motor stays still through power-up, reset and deep-sleep wake; no
+   motor noise in a recording started and stopped by button.
+8. Deep sleep: the button wakes the device; sleep current measured.
+9. Wi-Fi RSSI at 1 m and 5 m with the lid off, with the aluminium lid and
+   RF window, and with a printed lid (go/no-go for the window size).
