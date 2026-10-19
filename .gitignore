@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+# large, regenerable
+hardware/mechanical/export/openpocket-assembly.step
+hardware/mechanical/export/vendor-*.stl
+hardware/mechanical/vendor-models/**/*.zip
+hardware/electronics/wiring.svg.png
+.vercel
+hardware/mechanical/export/render/

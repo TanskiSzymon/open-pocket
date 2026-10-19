@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="860" viewBox="0 0 1200 860" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<rect width="1200" height="860" fill="#ffffff"/>
+<text x="20" y="30" font-size="20" font-weight="bold">OpenPocket v0 — wiring (modules, point-to-point, 30 AWG silicone wire)</text>
+<text x="20" y="50" fill="#444">All logic is 3.3 V. Both mics share one I2S bus (BCLK, LRCL, DOUT); mic 1 SEL→GND (left), mic 2 SEL→3V3 (right). microSD over SPI. Battery pads are on the UNDERSIDE of the XIAO.</text>
+<rect x="470" y="120" width="260" height="260" rx="8" fill="#e8f3e8" stroke="#333" stroke-width="1.5"/>
+<text x="600.0" y="140" text-anchor="middle" font-weight="bold">Seeed XIAO ESP32S3 (top view, USB-C →)</text>
+<circle cx="470" cy="170" r="4" fill="#fff" stroke="#333"/>
+<text x="478" y="174" text-anchor="start" font-size="12">D0 / GPIO1</text>
+<circle cx="470" cy="200" r="4" fill="#fff" stroke="#333"/>
+<text x="478" y="204" text-anchor="start" font-size="12">D1 / GPIO2</text>
+<circle cx="470" cy="230" r="4" fill="#fff" stroke="#333"/>
+<text x="478" y="234" text-anchor="start" font-size="12">D2 / GPIO3</text>
+<circle cx="470" cy="260" r="4" fill="#fff" stroke="#333"/>
+<text x="478" y="264" text-anchor="start" font-size="12">D3 / GPIO4</text>
+<circle cx="470" cy="290" r="4" fill="#fff" stroke="#333"/>
+<text x="478" y="294" text-anchor="start" font-size="12">D4 / GPIO5</text>
+<circle cx="470" cy="320" r="4" fill="#fff" stroke="#333"/>
+<text x="478" y="324" text-anchor="start" font-size="12">D5 / GPIO6</text>
+<circle cx="470" cy="350" r="4" fill="#fff" stroke="#333"/>
+<text x="478" y="354" text-anchor="start" font-size="12">D6 / GPIO43</text>
+<circle cx="730" cy="170" r="4" fill="#fff" stroke="#333"/>
+<text x="722" y="174" text-anchor="end" font-size="12">5V</text>
+<circle cx="730" cy="200" r="4" fill="#fff" stroke="#333"/>
+<text x="722" y="204" text-anchor="end" font-size="12">GND</text>
+<circle cx="730" cy="230" r="4" fill="#fff" stroke="#333"/>
+<text x="722" y="234" text-anchor="end" font-size="12">3V3</text>
+<circle cx="730" cy="260" r="4" fill="#fff" stroke="#333"/>
+<text x="722" y="264" text-anchor="end" font-size="12">D10 / GPIO9</text>
+<circle cx="730" cy="290" r="4" fill="#fff" stroke="#333"/>
+<text x="722" y="294" text-anchor="end" font-size="12">D9 / GPIO8</text>
+<circle cx="730" cy="320" r="4" fill="#fff" stroke="#333"/>
+<text x="722" y="324" text-anchor="end" font-size="12">D8 / GPIO7</text>
+<circle cx="730" cy="350" r="4" fill="#fff" stroke="#333"/>
+<text x="722" y="354" text-anchor="end" font-size="12">D7 / GPIO44</text>
+<text x="600.0" y="398" text-anchor="middle" font-size="11" fill="#555">Underside pads: BAT+ away from USB, BAT− nearest USB</text>
+<circle cx="560" cy="368" r="4" fill="#fff" stroke="#333"/>
+<text x="552" y="372" text-anchor="end" font-size="12">BAT+</text>
+<circle cx="640" cy="368" r="4" fill="#fff" stroke="#333"/>
+<text x="648" y="372" text-anchor="start" font-size="12">BAT−</text>
+<rect x="60" y="90" width="220" height="160" rx="8" fill="#e8eaf6" stroke="#333" stroke-width="1.5"/>
+<text x="170.0" y="110" text-anchor="middle" font-weight="bold">Mic 1 — Adafruit 3421 (SPH0645)</text>
+<circle cx="280" cy="120" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="124" text-anchor="end" font-size="12">3V</text>
+<circle cx="280" cy="142" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="146" text-anchor="end" font-size="12">GND</text>
+<circle cx="280" cy="164" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="168" text-anchor="end" font-size="12">BCLK</text>
+<circle cx="280" cy="186" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="190" text-anchor="end" font-size="12">DOUT</text>
+<circle cx="280" cy="208" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="212" text-anchor="end" font-size="12">LRCL</text>
+<circle cx="280" cy="230" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="234" text-anchor="end" font-size="12">SEL</text>
+<text x="70" y="240" font-size="11" fill="#555">SEL → GND = LEFT channel</text>
+<rect x="60" y="300" width="220" height="160" rx="8" fill="#e8eaf6" stroke="#333" stroke-width="1.5"/>
+<text x="170.0" y="320" text-anchor="middle" font-weight="bold">Mic 2 — Adafruit 3421 (SPH0645)</text>
+<circle cx="280" cy="330" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="334" text-anchor="end" font-size="12">3V</text>
+<circle cx="280" cy="352" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="356" text-anchor="end" font-size="12">GND</text>
+<circle cx="280" cy="374" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="378" text-anchor="end" font-size="12">BCLK</text>
+<circle cx="280" cy="396" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="400" text-anchor="end" font-size="12">DOUT</text>
+<circle cx="280" cy="418" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="422" text-anchor="end" font-size="12">LRCL</text>
+<circle cx="280" cy="440" r="4" fill="#fff" stroke="#333"/>
+<text x="272" y="444" text-anchor="end" font-size="12">SEL</text>
+<text x="70" y="450" font-size="11" fill="#555">SEL → 3V = RIGHT channel</text>
+<rect x="880" y="90" width="260" height="160" rx="8" fill="#e3f2fd" stroke="#333" stroke-width="1.5"/>
+<text x="1010.0" y="110" text-anchor="middle" font-weight="bold">microSD — SparkFun BOB-00544 (SPI)</text>
+<circle cx="880" cy="120" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="124" text-anchor="start" font-size="12">VCC (3V3)</text>
+<circle cx="880" cy="142" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="146" text-anchor="start" font-size="12">GND</text>
+<circle cx="880" cy="164" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="168" text-anchor="start" font-size="12">CS</text>
+<circle cx="880" cy="186" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="190" text-anchor="start" font-size="12">DI (MOSI)</text>
+<circle cx="880" cy="208" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="212" text-anchor="start" font-size="12">SCK</text>
+<circle cx="880" cy="230" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="234" text-anchor="start" font-size="12">DO (MISO)</text>
+<text x="895" y="245" font-size="11" fill="#555">CD pin unused. 3.3 V only, no level shifter needed.</text>
+<rect x="880" y="270" width="260" height="80" rx="8" fill="#fff3e0" stroke="#333" stroke-width="1.5"/>
+<text x="1010.0" y="290" text-anchor="middle" font-weight="bold">Side button — 6x6 tactile (B3F-1050)</text>
+<circle cx="880" cy="305" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="309" text-anchor="start" font-size="12">pin 1</text>
+<circle cx="880" cy="330" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="334" text-anchor="start" font-size="12">pin 2</text>
+<text x="1000" y="343" font-size="11" fill="#555">internal pull-up, active LOW</text>
+<rect x="880" y="370" width="260" height="90" rx="8" fill="#fce4ec" stroke="#333" stroke-width="1.5"/>
+<text x="1010.0" y="390" text-anchor="middle" font-weight="bold">Status LED — NeoPixel Mini Button (1612)</text>
+<circle cx="880" cy="400" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="404" text-anchor="start" font-size="12">+ (3V3)</text>
+<circle cx="880" cy="422" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="426" text-anchor="start" font-size="12">− (GND)</text>
+<circle cx="880" cy="444" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="448" text-anchor="start" font-size="12">DI</text>
+<rect x="880" y="480" width="260" height="150" rx="8" fill="#efebe9" stroke="#333" stroke-width="1.5"/>
+<text x="1010.0" y="500" text-anchor="middle" font-weight="bold">Haptic (optional) — coin motor + driver</text>
+<circle cx="880" cy="510" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="514" text-anchor="start" font-size="12">3V3</text>
+<circle cx="880" cy="535" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="539" text-anchor="start" font-size="12">GND</text>
+<circle cx="880" cy="560" r="4" fill="#fff" stroke="#333"/>
+<text x="888" y="564" text-anchor="start" font-size="12">CTRL (1 kΩ to base)</text>
+<text x="895" y="585" font-size="11" fill="#555">Q1 PN2222A: E→GND, C→motor−, B→1kΩ→CTRL</text>
+<text x="895" y="602" font-size="11" fill="#555">motor+ → 3V3; D1 1N4148 across motor (cathode to 3V3)</text>
+<text x="895" y="619" font-size="11" fill="#555">100 nF across motor terminals</text>
+<rect x="430" y="600" width="340" height="110" rx="8" fill="#fffde7" stroke="#333" stroke-width="1.5"/>
+<text x="600.0" y="620" text-anchor="middle" font-weight="bold">LiPo 403040, 3.7 V 500 mAh, 4 mm, with PCM</text>
+<circle cx="520" cy="600" r="4" fill="#fff" stroke="#333"/>
+<text x="512" y="604" text-anchor="end" font-size="12">RED (+)</text>
+<circle cx="680" cy="600" r="4" fill="#fff" stroke="#333"/>
+<text x="688" y="604" text-anchor="start" font-size="12">BLACK (−)</text>
+<text x="445" y="650" font-size="11" fill="#555">Charged by the XIAO (100 mA, ~5 h). Solder one lead at a time;</text>
+<text x="445" y="667" font-size="11" fill="#555">tape the other. Cover pads with Kapton after soldering.</text>
+<text x="445" y="690" font-size="11" fill="#b00">Optional VBAT sense: BAT+ → 220 kΩ → D0, D0 → 220 kΩ → GND</text>
+<rect x="430" y="740" width="340" height="70" rx="8" fill="#f0f0f0" stroke="#333" stroke-width="1.5"/>
+<text x="600.0" y="760" text-anchor="middle" font-weight="bold">2.4 GHz FPC antenna (supplied with XIAO)</text>
+<text x="445" y="785" font-size="11" fill="#555">U.FL plug onto the XIAO connector; stick antenna under the lid at the −X end.</text>
+<path d="M 730,230 L 770,230 L 770,95 L 410,95 L 410,120 L 280,120" fill="none" stroke="#d62728" stroke-width="2.2"/>
+<path d="M 410,120 L 410,330 L 280,330" fill="none" stroke="#d62728" stroke-width="2.2"/>
+<path d="M 410,330 L 410,440 L 280,440" fill="none" stroke="#d62728" stroke-width="2.2"/>
+<text x="286" y="436" font-size="11" fill="#d62728">SEL=3V3 (R)</text>
+<path d="M 730,200 L 785,200 L 785,80 L 395,80 L 395,142 L 280,142" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M 395,142 L 395,230 L 280,230" fill="none" stroke="#111111" stroke-width="2.2"/>
+<text x="286" y="226" font-size="11" fill="#111111">SEL=GND (L)</text>
+<path d="M 395,230 L 395,352 L 280,352" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M 470,200 L 440,200 L 440,164 L 280,164" fill="none" stroke="#1f77b4" stroke-width="2.2"/>
+<text x="286" y="160" font-size="11" fill="#1f77b4">BCLK</text>
+<path d="M 440,164 L 440,374 L 280,374" fill="none" stroke="#1f77b4" stroke-width="2.2"/>
+<path d="M 470,230 L 430,230 L 430,208 L 280,208" fill="none" stroke="#2ca02c" stroke-width="2.2"/>
+<text x="286" y="204" font-size="11" fill="#2ca02c">LRCL / WS</text>
+<path d="M 430,208 L 430,418 L 280,418" fill="none" stroke="#2ca02c" stroke-width="2.2"/>
+<path d="M 470,260 L 420,260 L 420,186 L 280,186" fill="none" stroke="#9467bd" stroke-width="2.2"/>
+<text x="286" y="182" font-size="11" fill="#9467bd">DOUT</text>
+<path d="M 420,186 L 420,396 L 280,396" fill="none" stroke="#9467bd" stroke-width="2.2"/>
+<path d="M 770,230 L 830,230 L 830,120 L 880,120" fill="none" stroke="#d62728" stroke-width="2.2"/>
+<path d="M 785,200 L 815,200 L 815,142 L 880,142" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M 730,260 L 755,260 L 755,186 L 880,186" fill="none" stroke="#bcbd22" stroke-width="2.2"/>
+<path d="M 730,320 L 745,320 L 745,208 L 880,208" fill="none" stroke="#17becf" stroke-width="2.2"/>
+<path d="M 730,290 L 765,290 L 765,230 L 880,230" fill="none" stroke="#7f7f7f" stroke-width="2.2"/>
+<path d="M 470,320 L 455,320 L 455,65 L 855,65 L 855,164 L 880,164" fill="none" stroke="#e7ba52" stroke-width="2.2"/>
+<path d="M 730,350 L 800,350 L 800,305 L 880,305" fill="none" stroke="#ff7f0e" stroke-width="2.2"/>
+<path d="M 815,142 L 815,330 L 880,330" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M 830,120 L 830,400 L 880,400" fill="none" stroke="#d62728" stroke-width="2.2"/>
+<path d="M 815,330 L 815,422 L 880,422" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M 470,350 L 450,350 L 450,400 L 845,400 L 845,444 L 880,444" fill="none" stroke="#e377c2" stroke-width="2.2"/>
+<path d="M 830,400 L 830,510 L 880,510" fill="none" stroke="#d62728" stroke-width="2.2"/>
+<path d="M 815,422 L 815,535 L 880,535" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M 470,290 L 460,290 L 460,415 L 860,415 L 860,560 L 880,560" fill="none" stroke="#8c564b" stroke-width="2.2"/>
+<path d="M 560,368 L 560,580 L 520,580 L 520,600" fill="none" stroke="#d62728" stroke-width="2.2"/>
+<path d="M 640,368 L 640,570 L 680,570 L 680,600" fill="none" stroke="#111111" stroke-width="2.2"/>
+<text x="60" y="520" font-weight="bold">Pin map (XIAO ESP32S3, all 11 GPIO used)</text>
+<text x="60" y="542" font-size="12" font-family="Menlo, monospace">D1 / GPIO2        </text>
+<text x="200" y="542" font-size="12">I2S BCLK (both mics)</text>
+<text x="60" y="560" font-size="12" font-family="Menlo, monospace">D2 / GPIO3        </text>
+<text x="200" y="560" font-size="12">I2S LRCL / WS (both mics)</text>
+<text x="60" y="578" font-size="12" font-family="Menlo, monospace">D3 / GPIO4        </text>
+<text x="200" y="578" font-size="12">I2S DOUT (both mics, L/R via SEL)</text>
+<text x="60" y="596" font-size="12" font-family="Menlo, monospace">D7 / GPIO44       </text>
+<text x="200" y="596" font-size="12">Button, to GND, INPUT_PULLUP</text>
+<text x="60" y="614" font-size="12" font-family="Menlo, monospace">D6 / GPIO43       </text>
+<text x="200" y="614" font-size="12">NeoPixel data</text>
+<text x="60" y="632" font-size="12" font-family="Menlo, monospace">D4 / GPIO5        </text>
+<text x="200" y="632" font-size="12">Haptic driver (optional)</text>
+<text x="60" y="650" font-size="12" font-family="Menlo, monospace">D0 / GPIO1        </text>
+<text x="200" y="650" font-size="12">VBAT sense via 2x220 kΩ (optional)</text>
+<text x="60" y="668" font-size="12" font-family="Menlo, monospace">D5 / GPIO6        </text>
+<text x="200" y="668" font-size="12">microSD CS</text>
+<text x="60" y="686" font-size="12" font-family="Menlo, monospace">D8 / GPIO7        </text>
+<text x="200" y="686" font-size="12">microSD SCK</text>
+<text x="60" y="704" font-size="12" font-family="Menlo, monospace">D9 / GPIO8        </text>
+<text x="200" y="704" font-size="12">microSD DO (MISO)</text>
+<text x="60" y="722" font-size="12" font-family="Menlo, monospace">D10 / GPIO9       </text>
+<text x="200" y="722" font-size="12">microSD DI (MOSI)</text>
+</svg>
