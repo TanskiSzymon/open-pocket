@@ -1,11 +1,22 @@
-# OpenPocket
+<p align="center">
+  <img src="images/openpocket-hero.jpg" alt="OpenPocket, graphite" width="100%">
+</p>
+
+<h1 align="center">OpenPocket</h1>
+
+<p align="center">
+  <b>Open-source DIY AI voice recorder in a machined aluminium case.</b><br>
+  ESP32-S3 · 2 MEMS mics · microSD · USB-C · MagSafe magnets · 80 × 48 × 12.6 mm
+</p>
+
+<p align="center">
+  <img src="images/openpocket-colorways.jpg" alt="Four colourways" width="100%">
+</p>
 
 An open-source, build-it-yourself take on the [Pocket](https://heypocket.com)
 AI voice recorder: a small screenless device in a machined aluminium case. It
 has two microphones, records to a microSD card and sends recordings to your
 laptop over BLE, Wi-Fi or USB, where they get transcribed.
-
-![OpenPocket](images/openpocket-hero.jpg)
 
 **Status: design complete, not built yet.** The mechanics and wiring are done
 and fit-checked in CAD, and the machining drawings are ready for a quote. The
@@ -25,7 +36,16 @@ CAD, with me making the product calls. More about that below.
 | Mount | 4 × Ø10 mm magnets in the floor (MagSafe compatible) |
 | Case | CNC 6061 aluminium shell + lid, anodized; printed internal tray; 4 × M2 screws |
 
-![Colourways](images/openpocket-colorways.jpg)
+<table>
+  <tr>
+    <td width="50%"><img src="images/openpocket-detail.jpg" alt="USB-C end and the aluminium button cap"></td>
+    <td width="50%"><img src="images/openpocket-bottom.jpg" alt="Bottom with laser marking"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Bright-cut edge, chamfered USB-C opening, captive aluminium button cap</sub></td>
+    <td align="center"><sub>Laser-marked bottom; the magnets sit under 0.9 mm of aluminium</sub></td>
+  </tr>
+</table>
 
 ## Why the Pocket protocol
 
@@ -37,7 +57,16 @@ diarization, summaries) should work with OpenPocket unchanged. See
 
 ## What's inside
 
-![Exploded view](images/openpocket-exploded.jpg)
+<table>
+  <tr>
+    <td width="50%"><img src="images/openpocket-exploded.jpg" alt="Exploded view"></td>
+    <td width="50%"><img src="images/openpocket-top.jpg" alt="Top view, midnight blue"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Shell, printed tray with the electronics, lid, M2 screws</sub></td>
+    <td align="center"><sub>7-hole mic grilles and the RF window that doubles as the status light</sub></td>
+  </tr>
+</table>
 
 - `hardware/mechanical/cad/openpocket_cad.py`: the whole enclosure as one
   parametric CadQuery script. Every run checks for interference between all
@@ -71,7 +100,26 @@ Roughly:
 Again: nobody has built one yet. If you do, please open an issue with what
 didn't fit.
 
-![Details](images/openpocket-detail.jpg)
+### Technical views
+
+<table>
+  <tr>
+    <td width="50%"><img src="hardware/mechanical/renders/render-open.png" alt="Inside, lid off"></td>
+    <td width="50%"><img src="hardware/electronics/wiring.png" alt="Wiring diagram"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Inside with the lid off: battery, XIAO, microSD, mics (CAD)</sub></td>
+    <td align="center"><sub>Point-to-point wiring</sub></td>
+  </tr>
+  <tr>
+    <td><img src="hardware/mechanical/drawings/shell-drawing.png" alt="Shell drawing"></td>
+    <td><img src="hardware/mechanical/drawings/lid-drawing.png" alt="Lid drawing"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Shell drawing (PDF in <code>hardware/mechanical/drawings/</code>)</sub></td>
+    <td align="center"><sub>Lid drawing</sub></td>
+  </tr>
+</table>
 
 ## Regenerating the files
 
